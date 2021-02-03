@@ -30,21 +30,34 @@ public:
 	void setTurnRate(float rate);
 	float getAccelerationRate() const;
 	void setAccelerationRate(float rate);
-	
+	void setReset(bool reset);
+	void setWhiskerCollision1(bool collision);
+	void setWhiskerCollision2(bool collision);
+	void setWhiskerCollision3(bool collision);
+	glm::vec2 getWhiskerOrientation1();
+	glm::vec2 getWhiskerOrientation2();
+
 private:
 
-	glm::vec2 m_destination;
-	glm::vec2 m_targetDirection;
-	glm::vec2 m_orientation;
-	float m_rotationAngle;
+	glm::vec2 m_destination; // target
+	glm::vec2 m_targetDirection; //normalized length
+	glm::vec2 m_orientation; // where ship is facing
+	glm::vec2 m_whiskerOrientation1;
+	glm::vec2 m_whiskerOrientation2;
+	float m_rotationAngle; //adds an angle to -90 offset then sets orientation with this data
+	float m_rotationAngle2;
 	float m_maxSpeed;
 	float m_turnRate;
 	float m_accelerationRate;
 	int m_behaviorChoice;
-
+	bool m_reset;
+	bool m_whiskerCollision1;
+	bool m_whiskerCollision2;
+	bool m_whiskerCollision3;
 	
 	// private function
 	void m_Move();
 };
+
 
 #endif /* defined (__SPACE_SHIP__) */

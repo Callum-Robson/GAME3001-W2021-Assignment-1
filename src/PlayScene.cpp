@@ -33,6 +33,16 @@ void PlayScene::update()
 
 	CollisionManager::AABBCheck(m_pSpaceShip, m_pObstacle);
 	CollisionManager::AABBCheck(m_pSpaceShip, m_pTarget);
+	m_pSpaceShip->setWhiskerCollision1(CollisionManager::lineRectCheck(m_pSpaceShip->getTransform()->position,
+		(m_pSpaceShip->getTransform()->position + m_pSpaceShip->getWhiskerOrientation1() * 100.0f),
+		m_pObstacle->getTransform()->position, 50.0, 50.0));
+	m_pSpaceShip->setWhiskerCollision2(CollisionManager::lineRectCheck(m_pSpaceShip->getTransform()->position,
+		(m_pSpaceShip->getTransform()->position + m_pSpaceShip->getWhiskerOrientation2() * 100.0f),
+		m_pObstacle->getTransform()->position, 50.0, 50.0));
+	m_pSpaceShip->setWhiskerCollision3(CollisionManager::lineRectCheck(m_pSpaceShip->getTransform()->position,
+		(m_pSpaceShip->getTransform()->position + m_pSpaceShip->getOrientation() * 125.0f),
+		m_pObstacle->getTransform()->position, 50.0, 50.0));
+	
 }
 
 void PlayScene::clean()
@@ -125,10 +135,11 @@ void PlayScene::GUI_Function() const
 	
 	if (ImGui::Button("Reset"))
 	{
-		m_pSpaceShip->getTransform()->position = glm::vec2(100.0f, 100.0f);
+		m_pSpaceShip->getTransform()->position = glm::vec2(100.0f, 300.0f);
 		m_pSpaceShip->setEnabled(false);
 		m_pSpaceShip->getRigidBody()->velocity = glm::vec2(0.0f, 0.0f);
 		m_pSpaceShip->setRotation(0.0f); // set Angle to 0 degrees
+		m_pSpaceShip->setReset(true);
 		turn_rate = 5.0f;
 		acceleration_rate = 2.0f;
 		speed = 10.0f;
