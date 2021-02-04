@@ -29,20 +29,50 @@ void PlayScene::draw()
 
 void PlayScene::update()
 {
+	auto deltaTime = TheGame::Instance()->getDeltaTime();
+	
 	updateDisplayList();
 
 	CollisionManager::AABBCheck(m_pSpaceShip, m_pObstacle);
 	CollisionManager::AABBCheck(m_pSpaceShip, m_pTarget);
-	m_pSpaceShip->setWhiskerCollision1(CollisionManager::lineRectCheck(m_pSpaceShip->getTransform()->position,
-		(m_pSpaceShip->getTransform()->position + m_pSpaceShip->getWhiskerOrientation1() * 100.0f),
-		m_pObstacle->getTransform()->position, 50.0, 50.0));
-	m_pSpaceShip->setWhiskerCollision2(CollisionManager::lineRectCheck(m_pSpaceShip->getTransform()->position,
-		(m_pSpaceShip->getTransform()->position + m_pSpaceShip->getWhiskerOrientation2() * 100.0f),
-		m_pObstacle->getTransform()->position, 50.0, 50.0));
-	m_pSpaceShip->setWhiskerCollision3(CollisionManager::lineRectCheck(m_pSpaceShip->getTransform()->position,
-		(m_pSpaceShip->getTransform()->position + m_pSpaceShip->getOrientation() * 125.0f),
-		m_pObstacle->getTransform()->position, 50.0, 50.0));
-	
+	if (CollisionManager::lineRectCheck(m_pSpaceShip->getTransform()->position,
+		(m_pSpaceShip->getTransform()->position + m_pSpaceShip->getWhiskerOrientation1() * 150.0f),
+		m_pObstacle->getTransform()->position, 50.0, 50.0))
+	{
+		m_pSpaceShip->setWhiskerCollision1(true);
+		collisionCheck = true;
+	}
+	else
+	{
+		m_pSpaceShip->setWhiskerCollision1(false);
+		collisionCheck = false;
+	}
+	if (CollisionManager::lineRectCheck(m_pSpaceShip->getTransform()->position,
+		(m_pSpaceShip->getTransform()->position + m_pSpaceShip->getWhiskerOrientation2() * 150.0f),
+		m_pObstacle->getTransform()->position, 50.0, 50.0))
+	{
+		m_pSpaceShip->setWhiskerCollision2(true);
+		collisionCheck = true;
+	}
+	else
+	{
+		m_pSpaceShip->setWhiskerCollision2(false);
+		collisionCheck = false;
+	}
+	if (CollisionManager::lineRectCheck(m_pSpaceShip->getTransform()->position,
+		(m_pSpaceShip->getTransform()->position + m_pSpaceShip->getOrientation() * 200.0f),
+		m_pObstacle->getTransform()->position, 196.0, 189.0))
+	{
+		m_pSpaceShip->setWhiskerCollision3(true);
+		collisionCheck = true;
+	}
+	else
+	{
+		m_pSpaceShip->setWhiskerCollision3(false);
+		collisionCheck = false; 
+	}
+
+	m_pSpaceShip->setObstacleDistance(Util::distance(m_pSpaceShip->getTransform()->position, m_pObstacle->getTransform()->position));
 }
 
 void PlayScene::clean()
@@ -63,11 +93,11 @@ void PlayScene::handleEvents()
 void PlayScene::start()
 {
 	// Set GUI Title
-	m_guiTitle = "Play Scene";	
+	m_guiTitle = "Play Scene";
 
 	m_pObstacle = new Obstacle();
-	m_pObstacle->getTransform()->position = glm::vec2(500.0f, 300.0f);
-	m_pObstacle->getTransform()->scale = glm::vec2(50.0f, 50.0f);
+	m_pObstacle->getTransform()->position = glm::vec2(350.0f, 200.0f);
+	m_pObstacle->getTransform()->scale = glm::vec2(196.0f, 189.0f);
 	m_pObstacle->setEnabled(false);
 	addChild(m_pObstacle);
 
@@ -75,6 +105,7 @@ void PlayScene::start()
 	m_pTarget->setEnabled(false);
 	m_pTarget->getTransform()->position = glm::vec2(700.0f, 300.0f);
 	addChild(m_pTarget);
+	
 
 	// instantiating spaceship
 	m_pSpaceShip = new SpaceShip();

@@ -19,7 +19,7 @@ SpaceShip::SpaceShip()
 	setType(SPACE_SHIP);
 	setMaxSpeed(10.0f);
 	setOrientation(glm::vec2(0.0f, -1.0f));
-	setRotation(0.0f);
+	setRotation(0.1f);
 	setAccelerationRate(10.0f);
 	setTurnRate(10.0f);
 	setReset(false);
@@ -36,9 +36,9 @@ void SpaceShip::draw()
 	TextureManager::Instance()->draw("spaceship", 
 		getTransform()->position.x, getTransform()->position.y, m_rotationAngle, 255, true);
 
-	Util::DrawLine(getTransform()->position, (getTransform()->position + getOrientation() * 125.0f) );
-	Util::DrawLine(getTransform()->position, (getTransform()->position + m_whiskerOrientation1 * 100.0f));
-	Util::DrawLine(getTransform()->position, (getTransform()->position + m_whiskerOrientation2 * 100.0f));
+	Util::DrawLine(getTransform()->position, (getTransform()->position + getOrientation() * 200.0f) );
+	Util::DrawLine(getTransform()->position, (getTransform()->position + m_whiskerOrientation1 * 150.0f), glm::vec4(1,0,0,0));
+	Util::DrawLine(getTransform()->position, (getTransform()->position + m_whiskerOrientation2 * 150.0f));
 }
 
 void SpaceShip::update()
@@ -127,6 +127,16 @@ void SpaceShip::setWhiskerCollision3(bool collision)
 	m_whiskerCollision3 = collision;
 }
 
+void SpaceShip::setObstacleDistance(float distance)
+{
+	m_obstacleDistance = distance;
+}
+
+float SpaceShip::get_obstacle_distance()
+{
+	return m_obstacleDistance;
+}
+
 void SpaceShip::setOrientation(const glm::vec2 orientation)
 {
 	m_orientation = orientation;
@@ -150,8 +160,8 @@ void SpaceShip::setRotation(const float angle)
 	m_rotationAngle = angle;
 
 	const auto offset = -90.0f;
-	const auto offset2 = -60.0f;
-	const auto offset3 = -120.0f;
+	const auto offset2 = -70.0f;
+	const auto offset3 = -110.0f;
 	const auto angle_in_radians = (angle + offset) * Util::Deg2Rad;
 	const auto angle_in_radians2 = (angle + offset2) * Util::Deg2Rad;
 	const auto angle_in_radians3 = (angle + offset3) * Util::Deg2Rad;
@@ -190,24 +200,26 @@ void SpaceShip::m_Move()
 			m_targetDirection *= -1;
 		}
 
-		auto target_rotation = Util::signedAngle(getOrientation(), m_targetDirection);
+		//auto target_rotation = Util::signedAngle(getOrientation(), m_targetDirection);
+
 
 		auto turn_sensitivity = 5.0f;
-
-		if (m_whiskerCollision1 == false && m_whiskerCollision2 == false)
-		{
-			if (abs(target_rotation) > turn_sensitivity)
-			{
-				if (target_rotation > 0.0f)
+		// this is whats responsible for the ship facing the target and other orientation controls not working
+		//if (m_whiskerCollision2 == false && m_whiskerCollision3 == false && m_whiskerCollision1 == false)
+			
+				auto target_rotation = Util::signedAngle(getOrientation(), m_targetDirection);
+				if (abs(target_rotation) > turn_sensitivity)
 				{
-					setRotation(getRotation() + getTurnRate());
-				}
-				else if (target_rotation < 0.0f)
-				{
-					setRotation(getRotation() - getTurnRate());
-				}
-			}
-		}
+					if (target_rotation > 0.0f)
+					{
+						setRotation(getRotation() + getTurnRate()); // follows by turning left
+					}
+					else if (target_rotation < 0.0f)
+					{
+						setRotation(getRotation() - getTurnRate()); // follows target by turning right
+					}
+				}	
+		
 
 		getRigidBody()->acceleration = getOrientation() * getAccelerationRate();
 
@@ -255,37 +267,50 @@ void SpaceShip::m_Move()
 				}
 			getTransform()->position += getRigidBody()->velocity;
 		}
+
+
+	
 		if (m_behaviorChoice == 4)
 		{
-			if ((getMaxSpeed() == 0.0 && (Util::distance(getTransform()->position, m_destination) < 40)) || m_reset == true)
+			/*if ((getMaxSpeed() == 0.0 && (Util::distance(getTransform()->position, m_destination) < 40)) || m_reset == true)
 			{
 				setMaxSpeed(10.0);
 				setReset(false);
+			}*/
+			if (m_whiskerCollision3 == true)// && m_whiskerCollision2 == false && m_whiskerCollision1 == false
+			{
+				
+				setMaxSpeed(getMaxSpeed() * 0.96);
+				getRigidBody()->velocity.y += 0.75;
+				
 			}
 			if (m_whiskerCollision1 == true)
 			{
-				setRotation(getRotation() + getTurnRate());
-				setMaxSpeed(0.0);
-				setWhiskerCollision1(false);
+				//setMaxSpeed(1.0);
+				getRigidBody()->velocity.y += 1.5;
+				//setRotation(0);
 			}
-			if (m_whiskerCollision2 == true)
+			else if (m_whiskerCollision2 == true)
 			{
-				setRotation(getRotation() - getTurnRate());
-				setMaxSpeed(0.0);
-				setWhiskerCollision2(false);
+				//setMaxSpeed(1.0);
+				getRigidBody()->velocity.y += 1.5;
+				//setRotation(180);
 			}
-			if (m_whiskerCollision3 == true)
+			/*if (m_obstacleDistance > 20 && m_whiskerCollision1 == false)
 			{
-				setRotation(getRotation() - getTurnRate());
-				setMaxSpeed(0.0);
-				setWhiskerCollision3(false);
+				setRotation(90);
 			}
+			if (m_obstacleDistance > 20 && m_whiskerCollision2 == false);
+			{
+				setRotation(90);
+			}*/
+			
 			// using the formula pf = pi + vi*t + 0.5ai*t^2
 			getRigidBody()->velocity += getOrientation() * (deltaTime)+
 				0.5f * getRigidBody()->acceleration * (deltaTime);
 
 			getRigidBody()->velocity = Util::clamp(getRigidBody()->velocity, m_maxSpeed);
-
+			
 			getTransform()->position += getRigidBody()->velocity;
 		}
 	

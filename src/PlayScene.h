@@ -26,6 +26,7 @@ private:
 	// IMGUI Function
 	void GUI_Function() const;
 	std::string m_guiTitle;
+	bool collisionCheck;
 	
 	glm::vec2 m_mousePosition;
 

@@ -34,8 +34,11 @@ public:
 	void setWhiskerCollision1(bool collision);
 	void setWhiskerCollision2(bool collision);
 	void setWhiskerCollision3(bool collision);
+	void setObstacleDistance(float distance);
+	float get_obstacle_distance();
 	glm::vec2 getWhiskerOrientation1();
 	glm::vec2 getWhiskerOrientation2();
+	
 
 private:
 
@@ -44,8 +47,8 @@ private:
 	glm::vec2 m_orientation; // where ship is facing
 	glm::vec2 m_whiskerOrientation1;
 	glm::vec2 m_whiskerOrientation2;
+	float m_obstacleDistance;
 	float m_rotationAngle; //adds an angle to -90 offset then sets orientation with this data
-	float m_rotationAngle2;
 	float m_maxSpeed;
 	float m_turnRate;
 	float m_accelerationRate;
