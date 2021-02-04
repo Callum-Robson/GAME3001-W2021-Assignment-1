@@ -35,6 +35,7 @@ private:
 	Obstacle* m_pObstacle;
 
 	Label* m_pInstructionsLabel{};
+	Label* m_pInstructionsLabel2{};
 
 	
 	// UI Items

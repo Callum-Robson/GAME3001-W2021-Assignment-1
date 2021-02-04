@@ -17,7 +17,7 @@ Obstacle::Obstacle()
 	setType(OBSTACLE);
 	getRigidBody()->isColliding = false;
 
-	SoundManager::Instance().load("../Assets/audio/yay.ogg", "yay", SOUND_SFX);
+	SoundManager::Instance().load("../Assets/audio/yay.wav", "yay", SOUND_SFX);
 }
 
 Obstacle::~Obstacle()

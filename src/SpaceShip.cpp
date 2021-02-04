@@ -36,9 +36,9 @@ void SpaceShip::draw()
 	TextureManager::Instance()->draw("spaceship", 
 		getTransform()->position.x, getTransform()->position.y, m_rotationAngle, 255, true);
 
-	Util::DrawLine(getTransform()->position, (getTransform()->position + getOrientation() * 200.0f) );
-	Util::DrawLine(getTransform()->position, (getTransform()->position + m_whiskerOrientation1 * 150.0f), glm::vec4(1,0,0,0));
-	Util::DrawLine(getTransform()->position, (getTransform()->position + m_whiskerOrientation2 * 150.0f));
+	//Util::DrawLine(getTransform()->position, (getTransform()->position + getOrientation() * 200.0f) );
+	//Util::DrawLine(getTransform()->position, (getTransform()->position + m_whiskerOrientation1 * 150.0f), glm::vec4(1,0,0,0));
+	//Util::DrawLine(getTransform()->position, (getTransform()->position + m_whiskerOrientation2 * 150.0f));
 }
 
 void SpaceShip::update()
@@ -279,21 +279,21 @@ void SpaceShip::m_Move()
 			}*/
 			if (m_whiskerCollision3 == true)// && m_whiskerCollision2 == false && m_whiskerCollision1 == false
 			{
-				
+				if (m_maxSpeed > 2)
 				setMaxSpeed(getMaxSpeed() * 0.96);
-				getRigidBody()->velocity.y += 0.75;
+				getRigidBody()->velocity.y += 0.70;
 				
 			}
 			if (m_whiskerCollision1 == true)
 			{
 				//setMaxSpeed(1.0);
-				getRigidBody()->velocity.y += 1.5;
+				getRigidBody()->velocity.y += 1.25;
 				//setRotation(0);
 			}
 			else if (m_whiskerCollision2 == true)
 			{
 				//setMaxSpeed(1.0);
-				getRigidBody()->velocity.y += 1.5;
+				getRigidBody()->velocity.y += 1.25;
 				//setRotation(180);
 			}
 			/*if (m_obstacleDistance > 20 && m_whiskerCollision1 == false)

@@ -7,6 +7,7 @@
 #include "imgui_sdl.h"
 #include "Renderer.h"
 #include "Util.h"
+#include "SoundManager.h"
 
 PlayScene::PlayScene()
 {
@@ -36,7 +37,7 @@ void PlayScene::update()
 	CollisionManager::AABBCheck(m_pSpaceShip, m_pObstacle);
 	CollisionManager::AABBCheck(m_pSpaceShip, m_pTarget);
 	if (CollisionManager::lineRectCheck(m_pSpaceShip->getTransform()->position,
-		(m_pSpaceShip->getTransform()->position + m_pSpaceShip->getWhiskerOrientation1() * 150.0f),
+		(m_pSpaceShip->getTransform()->position + m_pSpaceShip->getWhiskerOrientation1() * 125.0f),
 		m_pObstacle->getTransform()->position, 50.0, 50.0))
 	{
 		m_pSpaceShip->setWhiskerCollision1(true);
@@ -48,7 +49,7 @@ void PlayScene::update()
 		collisionCheck = false;
 	}
 	if (CollisionManager::lineRectCheck(m_pSpaceShip->getTransform()->position,
-		(m_pSpaceShip->getTransform()->position + m_pSpaceShip->getWhiskerOrientation2() * 150.0f),
+		(m_pSpaceShip->getTransform()->position + m_pSpaceShip->getWhiskerOrientation2() * 125.0f),
 		m_pObstacle->getTransform()->position, 50.0, 50.0))
 	{
 		m_pSpaceShip->setWhiskerCollision2(true);
@@ -60,7 +61,7 @@ void PlayScene::update()
 		collisionCheck = false;
 	}
 	if (CollisionManager::lineRectCheck(m_pSpaceShip->getTransform()->position,
-		(m_pSpaceShip->getTransform()->position + m_pSpaceShip->getOrientation() * 200.0f),
+		(m_pSpaceShip->getTransform()->position + m_pSpaceShip->getOrientation() * 175.0f),
 		m_pObstacle->getTransform()->position, 196.0, 189.0))
 	{
 		m_pSpaceShip->setWhiskerCollision3(true);
@@ -114,10 +115,18 @@ void PlayScene::start()
 	m_pSpaceShip->setDestination(m_pTarget->getTransform()->position);
 	addChild(m_pSpaceShip);
 
-	m_pInstructionsLabel = new Label("Press 1 for Seeking, 2 for Arrival, 3 for Fleeing", "Consolas", 20, { 255, 0, 0, 255 }, glm::vec2(400.0f, 100.0f));
+	m_pInstructionsLabel = new Label("Press 1 for Seeking, 2 for Arrival, 3 for Fleeing", "Consolas", 20, { 255, 0, 0, 255 }, glm::vec2(400.0f, 50.0f));
 	m_pInstructionsLabel->setEnabled(false);
 	m_pInstructionsLabel->setParent(this);
 	addChild(m_pInstructionsLabel);
+
+	m_pInstructionsLabel2 = new Label("4 for Obstacle Avoidance", "Consolas", 20, { 255, 0, 0, 255 }, glm::vec2(420.0f, 69.0f));
+	m_pInstructionsLabel2->setEnabled(false);
+	m_pInstructionsLabel2->setParent(this);
+	addChild(m_pInstructionsLabel2);
+
+	SoundManager::Instance().load("../Assets/audio/wii.mp3", "wii", SOUND_MUSIC);
+	SoundManager::Instance().playMusic("wii", -1, MIX_NO_FADING);
 }
 
 void PlayScene::GUI_Function() const
@@ -160,6 +169,7 @@ void PlayScene::GUI_Function() const
 		m_pTarget->setEnabled(true);
 		m_pObstacle->setEnabled(true);
 		m_pInstructionsLabel->setEnabled(true);
+		m_pInstructionsLabel2->setEnabled(true);
 	}
 
 	ImGui::SameLine();
